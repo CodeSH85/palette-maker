@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div>
+      <ul id="variables-collection">
+      </ul>
+      <div id="color-variables">
+      </div>
+    </div>
+  </body>
+  <script>
+
+    window.onmessage = (event) => {
+      const { type, collections, variables } = event.data.pluginMessage;
+      console.log(collections);
+      if (type === "get-variable-collections") {
+        const list = document.querySelector("#variables-collection");
+        list.innerHTML = "";
+        collections.forEach(({ name, id, variableIds }) => {
+          const li = document.createElement("li");
+          li.textContent = name;
+          li.setAttribute("id", `collection-${id}`);
+          li.onclick = () => {
+            parent.postMessage(
+              {
+                pluginMessage: {
+                  type: "get-variable-group",
+                  id,
+                  variableIds
+                },
+              },
+              "*"
+            );
+          };
+          list.appendChild(li);
+        });
+      } else if (type === 'get-collection-variables') {
+        const colorVariablesDiv = document.querySelector("#color-variables");
+        colorVariablesDiv.innerHTML = "";
+        variables.forEach(({ name, valuesByMode }) => {
+          const div = document.createElement("div");
+          div.textContent = `${name}: ${value}`;
+          colorVariablesDiv.appendChild(div);
+        });
+      }
+    };
+
+    function parseValue({ r, g, b, a }) {
+      const parsed = Object.values({ r, g, b, a }).map((value) => {
+        return Math.round(value * 255);
+      });
+      return `rgba(${r}, ${g}, ${b}, ${a})`;
+    }
+  </script>
+</html>
