@@ -1,3 +1,5 @@
+import { rgbToHex } from "./helper.js";
+
 console.clear();
 
 figma.showUI(__html__);
@@ -14,6 +16,7 @@ async function getVariableCollections(): Promise<void> {
       type: "get-variable-collections",
       collections: processedCollections
     });
+		console.log(rgbToHex({r: 1, g: 2, b: 4, a: 1}));
   } catch (error) {
     console.error(error);
   }
