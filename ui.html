@@ -1,7 +1,27 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script type="module">
+			import { Button } from "./src/component/Button.js";
+		</script>
+	</head>
   <body>
+		<div>
+			<div id="generate-button"></div>
+		</div>
     <div>
+			<div id="generate-button"></div>
+			<div style="display: flex;">
+				<button style="border-radius: 6px;height: 28px; width: 28px;border: none;">三</button>
+				<button style="border-radius: 6px;height: 28px; width: 28px;border: none;">{ }</button>
+			</div>
+			<button class="bg-primary-500 text-surface-invert"
+				style="border-radius: 8px;height: 36px;padding-left: 16px;padding-right: 16px;border: none;">
+				Generate
+			</button>
       <ul id="variables-collection">
       </ul>
       <div id="color-variables">
@@ -9,7 +29,9 @@
     </div>
   </body>
   <script>
-
+		const generateButton = document.querySelector('#generate-button');
+		const generateButton = Button({label: 'Generate'})
+		console.log(generateButton)
     window.onmessage = (event) => {
       const { type, collections, variables } = event.data.pluginMessage;
       console.log(collections);
