@@ -5,11 +5,12 @@
   "main": "code.js",
 	"type": "module",
   "scripts": {
-    "_build": "tsc -p tsconfig.json",
-		"build": "esbuild app.jsx --bundle --outfile=out.js",
-    "lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules .",
+		"lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules .",
     "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix .",
-    "watch": "npm run build -- --watch"
+    "tsc:build": "tsc -p tsconfig.json",
+    "tsc:watch": "npm run tsc:build -- --watch",
+    "esbuild:build": "node esbuild.config.js",
+  	"esbuild:watch": "node esbuild.config.js --watch"
   },
   "author": "",
   "license": "",
