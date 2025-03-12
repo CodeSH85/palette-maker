@@ -7,7 +7,7 @@ const buildOptions = {
   entryPoints: ['./src/code.ts'],
   bundle: true,
   treeShaking: true,
-  target: 'es2019',
+  target: 'es2016',
 };
 
 if (isWatchMode) {
