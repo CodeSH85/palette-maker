@@ -4,22 +4,18 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
-		<script type="module">
-			import { Button } from "./src/component/Button.js";
-		</script>
 	</head>
   <body>
-		<div>
-			<div id="generate-button"></div>
-		</div>
     <div>
-			<div id="generate-button"></div>
+			<div id="generate-button-container">
+			</div>
 			<div style="display: flex;">
 				<button style="border-radius: 6px;height: 28px; width: 28px;border: none;">三</button>
 				<button style="border-radius: 6px;height: 28px; width: 28px;border: none;">{ }</button>
 			</div>
 			<button class="bg-primary-500 text-surface-invert"
-				style="border-radius: 8px;height: 36px;padding-left: 16px;padding-right: 16px;border: none;">
+				style="border-radius: 8px;height: 36px;padding-left: 16px;padding-right: 16px;border: none;"
+			>
 				Generate
 			</button>
       <ul id="variables-collection">
@@ -28,14 +24,14 @@
       </div>
     </div>
   </body>
-  <script>
+  <script type="module">
 		// const generateButton = document.querySelector('#generate-button');
-		const generateButton = Button({label: 'Generate'})
-		console.log(generateButton)
+		// const generateButton = Button({label: 'Generate'});
     window.onmessage = (event) => {
-      const { type, collections, variables } = event.data.pluginMessage;
-      console.log(collections);
-      if (type === "get-variable-collections") {
+      const { name, content } = event.data.pluginMessage;
+      console.log(content);
+      if (name === "get-variable-collections") {
+				const { collections } = content;
         const list = document.querySelector("#variables-collection");
         list.innerHTML = "";
         collections.forEach(({ name, id, variableIds }) => {
@@ -56,7 +52,8 @@
           };
           list.appendChild(li);
         });
-      } else if (type === 'get-collection-variables') {
+      } else if (name === 'get-collection-variables') {
+				const { variables } = content;
         const colorVariablesDiv = document.querySelector("#color-variables");
         colorVariablesDiv.innerHTML = "";
         variables.forEach(({ name, valuesByMode }) => {
@@ -65,13 +62,36 @@
           colorVariablesDiv.appendChild(div);
         });
       }
+			if (name === "create-element") {
+				const { tag, attribute, children, parentElement } = content;
+				console.log(tag, attribute, children);
+
+				const element = document.createElement(tag);
+
+				if (children) {
+					element.innerHTML = children;
+				}
+
+				if (!!(attribute && Object.keys(attribute).length)) {
+					for (const [key, value] of Object.entries(attribute)) {
+						if (key === "style") {
+							for (const [styleKey, styleValue] of Object.entries(value)) {
+								element.style[styleKey] = styleValue;
+							}
+						} else if (typeof value === "string") {
+							element.setAttribute(key, value);
+						}
+					}
+				}
+
+				// Mount to parent element
+				let parent;
+				if (parentElement) {
+					parent = document.querySelector(parentElement);
+				}
+				parent.appendChild(element);
+			}
     };
 
-    function parseValue({ r, g, b, a }) {
-      const parsed = Object.values({ r, g, b, a }).map((value) => {
-        return Math.round(value * 255);
-      });
-      return `rgba(${r}, ${g}, ${b}, ${a})`;
-    }
   </script>
 </html>
