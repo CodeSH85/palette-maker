@@ -1,0 +1,38 @@
+.flex {
+	display: flex
+}
+.flex-row {
+	flex-direction: row;
+}
+.flex-col {
+	flex-direction: column;
+}
+.p-lg {
+	padding: 16px;
+}
+.p-x-lg {
+	padding-left: 16px;
+	padding-right: 16px;
+}
+.p-y-lg {
+	padding-top: 16px;
+	padding-bottom: 16px;
+}
+.p-l-lg {
+	padding-left: 16px;
+}
+.p-r-lg {
+	padding-right: 16px;
+}
+.p-t-lg {
+	padding-top: 16px;
+}
+.p-b-lg {
+	padding-bottom: 16px;
+}
+.bg-primary-500 {
+	background: rgba(49, 87, 44, 1);
+}
+.text-surface-invert {
+	color: #ffffff
+}

@@ -1,6 +1,12 @@
+import { Button } from "./component/button";
+import { postMessageToUI } from "./message";
+
 console.clear();
 
-figma.showUI(__html__);
+(function () {
+	figma.showUI(__html__);
+	getVariableCollections();
+})()
 
 async function getVariableCollections(): Promise<void> {
   try {
@@ -10,15 +16,24 @@ async function getVariableCollections(): Promise<void> {
       id: collection.id,
       variableIds: collection.variableIds,
     }));
-    figma.ui.postMessage({
-      type: "get-variable-collections",
-      collections: processedCollections
+    postMessageToUI({
+      name: "get-variable-collections",
+      content: {
+				collections: processedCollections
+			}
     });
+		Button({
+			parentElement: "#generate-button-container",
+			label: "Generate By JS",
+			style: {
+				"padding": "4px 6px",
+				"backgroundColor": "yellow"
+			}
+		});
   } catch (error) {
     console.error(error);
   }
 }
-getVariableCollections();
 
 figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[] }) => {
   if (msg.type === "get-variable-group") {
@@ -30,12 +45,14 @@ figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[
         })
       );
       console.log(variables);
-      figma.ui.postMessage({
-        type: 'get-collection-variables',
-        variables: variables.map(variable => ({
-          name: variable?.name || 'no name',
-          values: variable?.valuesByMode[msg.id] || [],
-        }))
+      postMessageToUI({
+        name: 'get-collection-variables',
+				content: {
+					variables: variables.map(variable => ({
+						name: variable?.name || 'no name',
+						values: variable?.valuesByMode[msg.id] || [],
+					}))
+				}
       });
     } catch (error) {
       console.error(error);
