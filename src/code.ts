@@ -4,7 +4,7 @@ import { postMessageToUI } from "./message";
 console.clear();
 
 (function () {
-	figma.showUI(__html__);
+	figma.showUI(__html__, { width: 300, height: 500 });
 	getVariableCollections();
 })()
 
