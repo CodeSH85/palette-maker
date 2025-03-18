@@ -5,23 +5,39 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 	</head>
-  <body>
-    <div>
-			<div id="generate-button-container">
+  <body style="margin: 0px;">
+    <div style="display: flex;flex-direction: column;height: 100%;">
+			<div
+				style="
+					height: 42px;
+					display: flex;
+					flex-shrink: 0;
+					align-items:center;
+					justify-content: start;
+					padding: 0px 12px;
+					border-bottom: 1px solid #CDCDCDFF;
+				">
+				<div id="list-button"></div>
+					tool bar
+				</div>
+			<div style="flex-grow: 1;overflow: auto;">
+				<ul id="variables-collection">
+				</ul>
+				<div id="color-variables">
+				</div>
 			</div>
-			<div style="display: flex;">
-				<button style="border-radius: 6px;height: 28px; width: 28px;border: none;">三</button>
-				<button style="border-radius: 6px;height: 28px; width: 28px;border: none;">{ }</button>
+			<div id="generate-button-container"
+				style="
+					height: 60px;
+					display: flex;
+					flex-shrink: 0;
+					align-items:center;
+					justify-content: end;
+					padding: 0px 12px;
+					border-top: 1px solid #CDCDCDFF;
+				">
+				<div id="generate-button"></div>
 			</div>
-			<button class="bg-primary-500 text-surface-invert"
-				style="border-radius: 8px;height: 36px;padding-left: 16px;padding-right: 16px;border: none;"
-			>
-				Generate
-			</button>
-      <ul id="variables-collection">
-      </ul>
-      <div id="color-variables">
-      </div>
     </div>
   </body>
   <script type="module">
