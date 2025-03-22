@@ -1,10 +1,10 @@
 import { Button } from "./component/button";
-import { postMessageToUI } from "./message";
+import { postMessageToUI } from "./utils/message";
 
 console.clear();
 
 (function () {
-	figma.showUI(__html__);
+	figma.showUI(__html__, { width: 300, height: 500 });
 	getVariableCollections();
 })()
 
@@ -23,12 +23,14 @@ async function getVariableCollections(): Promise<void> {
 			}
     });
 		Button({
-			parentElement: "#generate-button-container",
-			label: "Generate By JS",
-			style: {
-				"padding": "4px 6px",
-				"backgroundColor": "yellow"
-			}
+			parentElement: "#generate-button",
+			label: "Generate",
+			variant: 'filled',
+		});
+		Button({
+			parentElement: "#list-button",
+			icon: "fa-solid fa-bars-staggered",
+			variant: 'filled',
 		});
   } catch (error) {
     console.error(error);
