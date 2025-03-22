@@ -1,3 +1,6 @@
+body {
+	background-color: rgb(58, 75, 202);
+}
 .flex {
 	display: flex
 }
