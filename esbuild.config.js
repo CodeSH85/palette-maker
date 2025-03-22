@@ -6,6 +6,7 @@ const isWatchMode = process.argv.includes('--watch');
 const buildOptions = {
 	entryPoints: [
 		'./src/code.ts',
+		'./src/ui.ts',
 		'./src/css/style.css',
 		"./ui.html"
 	],
@@ -13,6 +14,7 @@ const buildOptions = {
 	minify: true,
   bundle: true,
   treeShaking: true,
+
 	// sourcemap: true,
 	assetNames: 'assets/[name]',
 	loader: {
