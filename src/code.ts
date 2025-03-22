@@ -1,5 +1,5 @@
 import { Button } from "./component/button";
-import { postMessageToUI } from "./message";
+import { postMessageToUI } from "./utils/message";
 
 console.clear();
 

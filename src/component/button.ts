@@ -1,5 +1,5 @@
 import { createEle } from "./createEle"
-import { postMessageToUI } from "../message"
+import { postMessageToUI } from "../utils/message"
 
 type ButtonProps = {
 	parentElement: string
