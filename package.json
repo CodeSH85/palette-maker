@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Your Figma Plugin",
   "main": "code.js",
-	"type": "module",
+  "type": "module",
   "scripts": {
-		"lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules .",
+    "lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules .",
     "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix .",
     "tsc:build": "tsc -p tsconfig.json",
     "tsc:watch": "npm run tsc:build -- --watch",
     "esbuild:build": "node esbuild.config.js",
-  	"esbuild:watch": "node esbuild.config.js --watch"
+    "esbuild:watch": "node esbuild.config.js --watch"
   },
   "author": "",
   "license": "",
@@ -45,6 +45,10 @@
     }
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "esbuild": "^0.25.1"
   }
 }
