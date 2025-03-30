@@ -15,6 +15,7 @@
   "author": "",
   "license": "",
   "devDependencies": {
+    "@create-figma-plugin/utilities": "4.0.0-alpha.0",
     "@figma/eslint-plugin-figma-plugins": "*",
     "@figma/plugin-typings": "^1.108.0",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
