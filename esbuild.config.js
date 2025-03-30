@@ -21,13 +21,15 @@ const buildOptions = {
 		".html": "file"
 	},
   target: 'es2016',
-	write: false
+	write: false,
+	external: []
 };
 
 async function build() {
 	const result = await esbuild.build(buildOptions);
 	const code = result.outputFiles.find(file => file.path.endsWith('code.js'))?.text;
 	const ui = result.outputFiles.find(file => file.path.endsWith('ui.js'))?.text;
+
   const cssCode = result.outputFiles.find(file => file.path.endsWith('.css'))?.text || '';
   const htmlCode = result.outputFiles.find(file => file.path.endsWith('.html'))?.text || '';
 
