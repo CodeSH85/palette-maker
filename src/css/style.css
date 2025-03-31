@@ -1,5 +1,4 @@
 body {
-	background-color: rgb(58, 75, 202);
 }
 .flex {
 	display: flex
@@ -9,6 +8,39 @@ body {
 }
 .flex-col {
 	flex-direction: column;
+}
+.flex-shrink {
+	flex-shrink: 1;
+}
+.flex-shrink-0 {
+	flex-shrink: 0;
+}
+.flex-grow {
+	flex-grow: 1;
+}
+.flex-grow-0 {
+	flex-grow: 0;
+}
+.align-items-center {
+	align-items: center;
+}
+.justify-content-start {
+	justify-content: start
+}
+.justify-content-center {
+	justify-content: center
+}
+.justify-content-end {
+	justify-content: end
+}
+.h-full {
+	height: 100%;
+}
+.w-full {
+	width: 100%;
+}
+.m-0 {
+	margin: 0px;
 }
 .p-lg {
 	padding: 16px;
@@ -38,4 +70,84 @@ body {
 }
 .text-surface-invert {
 	color: #ffffff
+}
+.font-medium {
+	font-weight: 500;
+}
+.text-left {
+	text-align: left;
+}
+.text-center {
+	text-align: center;
+}
+.text-right {
+	text-align: right;
+}
+
+/* The container */
+.container {
+  display: flex;
+  position: relative;
+  cursor: pointer;
+  font-size: 14px;
+	/* padding-left: 24px; */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* Hide the browser's default checkbox */
+.container input {
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+/* Create a custom checkbox */
+.customizedCheckbox {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+  height: 16px;
+  width: 16px;
+	border: 1px solid #cdcdcd;
+	border-radius: 4px;
+	/* background: rgba(255,255,255,.5); */
+	transition: background .2s;
+}
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .customizedCheckbox {
+	border: 0px;
+  background: #31572C;
+	display: flex;
+	align-items: center;
+}
+
+/* Create the customizedCheckbox/indicator (hidden when not checked) */
+.customizedCheckbox:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the customizedCheckbox when checked */
+.container input:checked ~ .customizedCheckbox:after {
+  display: block;
+}
+
+/* Style the customizedCheckbox/indicator */
+.container .customizedCheckbox:after {
+  left: 5px;
+	top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+ul {
+	list-style-type: none;
+	padding-left: 0;
 }
