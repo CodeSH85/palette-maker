@@ -1,4 +1,6 @@
 import { Button } from "./component/button";
+import { Checkbox } from "./component/checkbox";
+import { List } from "./component/list";
 import { postMessageToUI } from "./utils/message";
 
 console.clear();
@@ -11,26 +13,47 @@ console.clear();
 async function getVariableCollections(): Promise<void> {
   try {
     const variablesCollections = await figma.variables.getLocalVariableCollectionsAsync();
+		console.log('=======variables', variablesCollections)
     const processedCollections = variablesCollections.map(collection => ({
       name: collection.name,
       id: collection.id,
       variableIds: collection.variableIds,
     }));
-    postMessageToUI({
-      name: "get-variable-collections",
-      content: {
-				collections: processedCollections
-			}
-    });
+		List({
+			parentElement: "#variables-collection",
+			items: processedCollections,
+			selectable: true,
+			subItems: 'variableIds'
+		});
+    // postMessageToUI({
+    //   name: "get-variable-collections",
+    //   content: {
+		// 		collections: processedCollections
+		// 	}
+    // });
 		Button({
 			parentElement: "#generate-button",
 			label: "Generate",
 			variant: 'filled',
+			size: 'lg'
 		});
 		Button({
 			parentElement: "#list-button",
 			icon: "fa-solid fa-bars-staggered",
 			variant: 'filled',
+			outlined: true,
+			size: 'md'
+		});
+		Button({
+			parentElement: "#code-button",
+			icon: "fa-solid fa-code",
+			variant: 'filled',
+			outlined: true,
+			size: 'md'
+		});
+		Checkbox({
+			parentElement: "#variables-item",
+			label: "Label"
 		});
   } catch (error) {
     console.error(error);
