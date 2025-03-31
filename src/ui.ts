@@ -23,20 +23,20 @@ window.onmessage = (event) => {
 			li.textContent = name;
 			li.setAttribute("id", `collection-${id}`);
 			li.onclick = () => {
-				parent.postMessage(
-					{
-						pluginMessage: {
-							type: "get-variable-group",
-							id,
-							variableIds
-						},
-					},
-				},
-				"*"
-			);
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: "get-variable-group",
+            id,
+            variableIds
+          }
+        },
+        "*"
+      );
 		};
 		list.appendChild(li);
 	});
+	}
 }
 
 function getCollectionVariables(content: Content): void {
