@@ -4,25 +4,24 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
-  <body style="margin: 0px;">
-    <div style="display: flex;flex-direction: column;height: 100%;">
+  <body class="m-0">
+    <div class="flex flex-col h-full">
 			<div
+				class="flex flex-shrink-0 align-items-center justify-content-start"
 				style="
 					height: 42px;
-					display: flex;
-					flex-shrink: 0;
-					align-items:center;
-					justify-content: start;
 					padding: 0px 12px;
 					border-bottom: 1px solid #CDCDCDFF;
+					gap: 12px
 				">
 				<div id="list-button"></div>
-					tool bar
-				</div>
+				<div id="code-button"></div>
+			</div>
 			<div style="flex-grow: 1;overflow: auto;">
+				<div id="variables-item"></div>
 				<ul id="variables-collection">
 				</ul>
-				<div id="color-variables">
+				<div id="color-variables" style="display: contents">
 				</div>
 			</div>
 			<div id="generate-button-container"
