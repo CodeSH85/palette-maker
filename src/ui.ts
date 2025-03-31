@@ -47,6 +47,7 @@ function getVariableCollections(content: Content): void {
 		};
 		list.appendChild(li);
 	});
+	}
 }
 
 function getCollectionVariables(content: Content): void {
