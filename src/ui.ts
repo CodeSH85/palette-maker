@@ -1,10 +1,7 @@
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import { faBarsStaggered } from '@fortawesome/free-solid-svg-icons'
 import { faCode } from '@fortawesome/free-solid-svg-icons'
-// import { far } from '@fortawesome/free-regular-svg-icons'
-// import { fab } from '@fortawesome/free-brands-svg-icons'
 
-// library.add(fas, far, fab)
 library.add(faBarsStaggered)
 library.add(faCode)
 dom.watch();
@@ -14,29 +11,38 @@ type Content = Record<string, unknown>;
 window.onmessage = (event) => {
 	const { name, content } = event.data.pluginMessage;
 	console.log('content:', content);
-	if (name === "get-variable-collections") {
-		const { collections } = content;
-		const list = document.querySelector("#variables-collection");
-		list.innerHTML = "";
-		collections.forEach(({ name, id, variableIds }) => {
-			const li = document.createElement("li");
-			li.textContent = name;
-			li.setAttribute("id", `collection-${id}`);
-			li.onclick = () => {
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: "get-variable-group",
-            id,
-            variableIds
-          }
-        },
-        "*"
-      );
+	eventMap[name]?.(content);
+};
+
+const eventMap: Record<string, (arg0: Content) => void> = {
+	"get-variable-collections": getVariableCollections,
+	"get-collection-variables": getCollectionVariables,
+	"create-element": createElement,
+};
+
+function getVariableCollections(content: Content): void {
+  const { collections } = content as { collections: { name: string; id: string; variableIds: string[] }[] };
+	const list = document.querySelector("#variables-collection");
+	if (!list) return undefined;
+	list.innerHTML = "";
+	collections.forEach(({ name, id, variableIds }) => {
+		const li = document.createElement("li");
+		li.textContent = name;
+		li.setAttribute("id", `collection-${id}`);
+		li.onclick = () => {
+			parent.postMessage(
+				{
+					pluginMessage: {
+						type: "get-variable-group",
+						id,
+						variableIds,
+					},
+				},
+				"*"
+			);
 		};
 		list.appendChild(li);
 	});
-	}
 }
 
 function getCollectionVariables(content: Content): void {
