@@ -25,12 +25,12 @@ async function getVariableCollections(): Promise<void> {
 			selectable: true,
 			subItems: 'variableIds'
 		});
-    // postMessageToUI({
-    //   name: "get-variable-collections",
-    //   content: {
-		// 		collections: processedCollections
-		// 	}
-    // });
+    postMessageToUI({
+      name: "get-variable-collections",
+      content: {
+				collections: processedCollections
+			}
+    });
 		Button({
 			parentElement: "#generate-button",
 			label: "Generate",
@@ -75,6 +75,7 @@ figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[
 				content: {
 					variables: variables.map(variable => ({
 						name: variable?.name || 'no name',
+						resolvedType: variable?.resolvedType,
 						values: variable?.valuesByMode[msg.id] || [],
 					}))
 				}
