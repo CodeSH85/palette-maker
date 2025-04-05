@@ -36,6 +36,5 @@ export function createEle(property: ElementProp): ElementProp {
 	if (!isValidHTMLElement(tag)) {
 		throw new Error(`Invalid HTML element tag: ${tag}`);
 	}
-	console.log({ ...property, tag });
 	return { ...property, tag };
 }
