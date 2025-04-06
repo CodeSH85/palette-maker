@@ -46,7 +46,7 @@ export function Button(property: ButtonProps) {
 	const buttonStyle = {
 		filled: {
 			height: buttonSize[size],
-			background: 'rgba(49, 87, 44, 1)',
+			background: '#0C8CE9',
 			color: '#FFFFFFFF',
 			fontWeight: 500,
 			letterSpacing: '1px',
@@ -58,7 +58,7 @@ export function Button(property: ButtonProps) {
 		},
 		tonal: {
 			height: buttonSize[size],
-			background: 'rgba(49, 87, 44, 1)',
+			background: '#0C8CE9',
 			color: '#FFFFFFFF',
 			fontWeight: 500,
 			padding: '0px 16px',
@@ -69,7 +69,7 @@ export function Button(property: ButtonProps) {
 		text: {
 			height: buttonSize[size],
 			background: 'transparent',
-			color: 'rgba(49, 87, 44, 1)',
+			color: '#0C8CE9',
 			fontWeight: 500,
 			padding: '0px 16px',
 			borderRadius: '8px',
@@ -79,13 +79,13 @@ export function Button(property: ButtonProps) {
 		outlined: {
 			height: buttonSize[size],
 			background: 'transparent',
-			color: 'rgba(49, 87, 44, 1)',
+			color: '#0C8CE9',
 			fontWeight: 500,
 			padding: '0px 16px',
 			borderRadius: '8px',
 			transition: 'color 0.2s',
 			cursor: 'pointer',
-			border: '1px solid rgba(49, 87, 44, 1)'
+			border: '1px solid #0C8CE9'
 		}
 	}
 
