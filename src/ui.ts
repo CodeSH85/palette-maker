@@ -26,9 +26,9 @@ function getVariableCollections(content: Content): void {
 	list.innerHTML = "";
 	collections.forEach(({ name, id, variableIds }) => {
 		const li = document.createElement("li");
-		const checkbox = document.createElement("input");
-		checkbox.type = "checkbox";
-		li.append(checkbox);
+		// const checkbox = document.createElement("input");
+		// checkbox.type = "checkbox";
+		// li.append(checkbox);
 		const label = document.createElement("span");
 		label.textContent = name;
 		li.append(label);
