@@ -18,6 +18,7 @@ async function getVariableCollections(): Promise<void> {
       name: collection.name,
       id: collection.id,
       variableIds: collection.variableIds,
+			modes: collection.modes
     }));
 		List({
 			parentElement: "#variables-collection",
@@ -60,7 +61,7 @@ async function getVariableCollections(): Promise<void> {
   }
 }
 
-figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[] }) => {
+figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[], modes: Mode[] }) => {
   if (msg.type === "get-variable-group") {
     console.log(msg.id);
     try {
@@ -69,14 +70,13 @@ figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[
           return figma.variables.getVariableByIdAsync(variableId);
         })
       );
-      console.log(variables);
       postMessageToUI({
         name: 'get-collection-variables',
 				content: {
 					variables: variables.map(variable => ({
 						name: variable?.name || 'no name',
 						resolvedType: variable?.resolvedType,
-						values: variable?.valuesByMode[msg.id] || [],
+						values: variable?.valuesByMode[msg.modes[0].modeId] || [],
 					}))
 				}
       });
@@ -84,4 +84,9 @@ figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[
       console.error(error);
     }
   }
+}
+
+interface Mode {
+	name: string,
+	modeId: string
 }
