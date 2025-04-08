@@ -1,13 +1,13 @@
 /**
- * 
+ *
  * Helper functions from figma repo:
  * https://github.com/figma/plugin-samples/blob/main/variables-import-export/code.js#L167
  */
 
 /**
- * 
- * @param param0 
- * @returns 
+ *
+ * @param param0
+ * @returns
  */
 export function rgbToHex({ r, g, b, a }: Record<string, number>): string {
   if (a !== 1) {
