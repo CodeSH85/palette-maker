@@ -69,12 +69,12 @@ function createTree(entry, parent, parentEl) {
 	const [key, value] = entry;
 
 	const container = document.createElement("div")
-	container.className = 'flex flex-col w-full';
-	container.style = "border: 1px solid"
+	container.className = 'container flex flex-col w-full';
+	container.style = "box-sizing: border-box;" + (parent ? "padding-left:12px" : "padding-left:6px;")
 
 	const div = document.createElement("div");
 	div.className = "flex w-full"
-	div.style = "gap: 6px";
+	div.style = "gap: 4px";
 	const checkbox = document.createElement("input");
 	checkbox.type = "checkbox";
 	const label = document.createElement("label");
@@ -84,8 +84,8 @@ function createTree(entry, parent, parentEl) {
 	container.append(div)
 
 	const subContainer = document.createElement("div");
-	subContainer.className = "flex flex-col w-full"
-	subContainer.style = "margin-left: 1rem; border: 1px solid"
+	subContainer.className = "sub-container flex flex-col w-full"
+	subContainer.style = "box-sizing: border-box;padding-left:6px"
 	const valueEntry = Object.entries(value);
 	valueEntry.forEach(([key, value]) => {
 		if (typeof value === 'object' && !value.type) {
@@ -94,6 +94,8 @@ function createTree(entry, parent, parentEl) {
 		} else {
 			// last token. e.g. ['100', {value}]
 			const div = document.createElement("div");
+			div.className = "flex w-full"
+			div.style = "gap: 4px;border-left: 1px solid #CDCDCD;padding-left:6px;box-sizing: border-box;";
 			const checkbox = document.createElement("input");
 			checkbox.type = "checkbox";
 			const label = document.createElement("label");
