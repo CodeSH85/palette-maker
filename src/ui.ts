@@ -1,6 +1,7 @@
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import { faBarsStaggered } from '@fortawesome/free-solid-svg-icons'
 import { faCode } from '@fortawesome/free-solid-svg-icons'
+import { rgbToHex } from './utils/helper'
 
 library.add(faBarsStaggered)
 library.add(faCode)
@@ -24,7 +25,7 @@ function getVariableCollections(content: Content): void {
 	const list = document.querySelector("#variables-collection");
 	if (!list) return undefined;
 	list.innerHTML = "";
-	collections.forEach(({ name, id, variableIds }) => {
+	collections.forEach(({ name, id, variableIds, modes }) => {
 		const li = document.createElement("li");
 		// const checkbox = document.createElement("input");
 		// checkbox.type = "checkbox";
@@ -40,6 +41,7 @@ function getVariableCollections(content: Content): void {
 						type: "get-variable-group",
 						id,
 						variableIds,
+						modes
 					},
 				},
 				"*"
@@ -47,7 +49,6 @@ function getVariableCollections(content: Content): void {
 		};
 		list.appendChild(li);
 	});
-	}
 }
 
 function getCollectionVariables(content: Content): void {
@@ -55,52 +56,95 @@ function getCollectionVariables(content: Content): void {
   const colorVariablesDiv = document.querySelector("#color-variables");
   if (!colorVariablesDiv) return;
   colorVariablesDiv.innerHTML = "";
-	console.log(variables);
-	const table = getVariableGroup(variables.filter(({ resolvedType }) => resolvedType === "COLOR"));
-	console.log(table);
-	Object.entries(table).forEach(([key, value]) => {
-		const div = document.createElement("div");
-		const checkbox = document.createElement("input");
-		checkbox.type = "checkbox";
-		const label = document.createElement("span");
-		label.textContent = key;
-		div.append(checkbox);
-		div.append(label);
-
-		if (Object.entries(value).length) {
-			Object.entries(value).forEach(([val, num]) => {
-				const subDiv = document.createElement("div");
-				subDiv.style = "padding-left: 1em;"
-				const subCheckbox = document.createElement("input");
-				subCheckbox.type = "checkbox";
-
-				const subLabel = document.createElement("span");
-				subLabel.textContent = `${val}`;
-				subDiv.append(subCheckbox);
-				subDiv.append(subLabel);
-				if (num.length) {
-					const numHolder = document.createElement("div");
-					numHolder.style = "padding-left: 1em; display: flex; flex-direction: column; width: 100%;";
-					num.forEach((item => {
-						const numDiv = document.createElement("div");
-						numDiv.style = "display: flex; align-items: center; width: 100%;";
-						const numCheckbox = document.createElement("input");
-						numCheckbox.type = "checkbox";
-						numDiv.append(numCheckbox);
-						const numLabel = document.createElement("div");
-						numLabel.textContent = item;
-						numLabel.style = "padding-left: 1em;"
-						numDiv.append(numLabel);
-						numHolder.append(numDiv);
-					}));
-					subDiv.append(numHolder);
-				}
-
-				div.append(subDiv);
-			})
-		}
-		colorVariablesDiv.appendChild(div);
+	console.log('variables==',variables);
+	const variablesTree = getVariableGroup(variables.filter(({ resolvedType }) => resolvedType === "COLOR"));
+	console.log('tree==',variablesTree);
+	Object.entries(variablesTree).forEach(([key, value]) => {
+		// colorVariablesDiv.appendChild(div);
+		createTree([key, value], '', colorVariablesDiv)
 	});
+}
+
+function createTree(entry, parent, parentEl) {
+	const [key, value] = entry;
+
+	const container = document.createElement("div")
+	container.className = 'flex flex-col w-full';
+	container.style = "border: 1px solid"
+
+	const div = document.createElement("div");
+	div.className = "flex w-full"
+	div.style = "gap: 6px";
+	const checkbox = document.createElement("input");
+	checkbox.type = "checkbox";
+	const label = document.createElement("label");
+	label.textContent = key;
+	div.append(checkbox);
+	div.append(label);
+	container.append(div)
+
+	const subContainer = document.createElement("div");
+	subContainer.className = "flex flex-col w-full"
+	subContainer.style = "margin-left: 1rem; border: 1px solid"
+	const valueEntry = Object.entries(value);
+	valueEntry.forEach(([key, value]) => {
+		if (typeof value === 'object' && !value.type) {
+			// group. e.g. ['base', {100:{}}]
+			createTree([key, value], key, container)
+		} else {
+			// last token. e.g. ['100', {value}]
+			const div = document.createElement("div");
+			const checkbox = document.createElement("input");
+			checkbox.type = "checkbox";
+			const label = document.createElement("label");
+			label.textContent = key;
+			div.append(checkbox);
+			div.append(label);
+			subContainer.append(div)
+		}
+	})
+	if (subContainer.children?.length) {
+		container.append(subContainer)
+	}
+	parentEl.append(container)
+}
+
+function getVariableGroup(collections: unknown[]): Record<string, Record<string, string>> {
+	// const table = collections.reduce((obj, item) => {
+	// 	const getGroup = item.name.split("/");
+	// 	const group = getGroup[0];
+	// 	const val = getGroup[1];
+	// 	const num = getGroup[getGroup.length - 1];
+	// 	if (!obj[group]) obj[group] = {};
+	// 	if (!obj[group][val]) {
+	// 		obj[group][val] = []
+	// 	} else {
+	// 		obj[group][val].push(num);
+	// 	}
+	// 	return obj;
+	// }, {})
+	// return table;
+	const result = {}
+	collections.forEach(item => {
+		const parts = item.name.split("/");
+		let currentObj = result;
+
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i];
+			if (i === parts.length - 1) {
+				currentObj[part] = {
+					type: 'color',
+					value: (item.values?.r) ? rgbToHex(item.values) : ''
+				}
+			} else {
+				if (!currentObj[part]) {
+					currentObj[part] = {}
+				}
+				currentObj = currentObj[part];
+			}
+		}
+	})
+	return result
 }
 
 function createElement(content: Content): void {
@@ -130,21 +174,4 @@ function createElement(content: Content): void {
 
   const parent = parentElement ? document.querySelector(parentElement) : null;
   parent?.appendChild(element);
-}
-
-function getVariableGroup(collections: unknown[]): Record<string, Record<string, string>> {
-	const table = collections.reduce((obj, item) => {
-		const getGroup = item.name.split("/");
-		const group = getGroup[0];
-		const val = getGroup[1];
-		const num = getGroup[getGroup.length - 1];
-		if (!obj[group]) obj[group] = {};
-		if (!obj[group][val]) {
-			obj[group][val] = []
-		} else {
-			obj[group][val].push(num);
-		}
-		return obj;
-	}, {})
-	return table;
 }
