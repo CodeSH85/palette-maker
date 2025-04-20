@@ -51,6 +51,9 @@ function getVariableCollections(content: Content): void {
 	});
 }
 
+type Palettes = object[];
+let palettes: Palettes = [];
+let currentGroup = {} as { parent?: string; group?: object[]; palettes?: object[]}
 function getCollectionVariables(content: Content): void {
   const { variables } = content as { variables: { name: string; resolvedType: string }[] };
   const colorVariablesDiv = document.querySelector("#color-variables");
@@ -60,7 +63,6 @@ function getCollectionVariables(content: Content): void {
 	const variablesTree = getVariableGroup(variables.filter(({ resolvedType }) => resolvedType === "COLOR"));
 	console.log('tree==',variablesTree);
 	Object.entries(variablesTree).forEach(([key, value]) => {
-		// colorVariablesDiv.appendChild(div);
 		createTree([key, value], '', colorVariablesDiv)
 	});
 }
@@ -77,11 +79,24 @@ function createTree(entry, parent, parentEl) {
 	div.style = "gap: 4px";
 	const checkbox = document.createElement("input");
 	checkbox.type = "checkbox";
+	checkbox.checked = true;
 	const label = document.createElement("label");
 	label.textContent = key;
 	div.append(checkbox);
 	div.append(label);
 	container.append(div)
+
+	if (parent) {
+		if (!currentGroup.group) {
+			currentGroup['group'] = []
+		}
+		currentGroup.group.push({
+			name: parent,
+			palettes: []
+		})
+	} else {
+		currentGroup['parent'] = key
+	}
 
 	const subContainer = document.createElement("div");
 	subContainer.className = "sub-container flex flex-col w-full"
@@ -98,6 +113,35 @@ function createTree(entry, parent, parentEl) {
 			div.style = "gap: 4px;border-left: 1px solid #CDCDCD;padding-left:6px;box-sizing: border-box;";
 			const checkbox = document.createElement("input");
 			checkbox.type = "checkbox";
+			checkbox.checked = true;
+			if (checkbox.checked === true) {
+				if (currentGroup.group?.length) {
+					currentGroup.group.find(g => g.name === parent)?.palettes.push({
+						name: key,
+						value: value.value
+					})
+				} else {
+					if (!currentGroup.palettes) {
+						currentGroup.palettes = []
+					}
+					currentGroup.palettes.push({
+						name: key,
+						value: value.value
+					})
+				}
+			}
+			checkbox.onclick = () => {
+				const color = {
+					name: key,
+					value: value.value
+				}
+				console.log(checkbox.checked, color)
+				if (checkbox.checked === true) {
+					palettes.push(color)
+				} else if (palettes.map(p => p)) {
+
+				}
+			}
 			const label = document.createElement("label");
 			label.textContent = key;
 			div.append(checkbox);
@@ -108,24 +152,14 @@ function createTree(entry, parent, parentEl) {
 	if (subContainer.children?.length) {
 		container.append(subContainer)
 	}
+	if (!parent) {
+		palettes.push(currentGroup)
+		currentGroup = {}
+	}
 	parentEl.append(container)
 }
 
 function getVariableGroup(collections: unknown[]): Record<string, Record<string, string>> {
-	// const table = collections.reduce((obj, item) => {
-	// 	const getGroup = item.name.split("/");
-	// 	const group = getGroup[0];
-	// 	const val = getGroup[1];
-	// 	const num = getGroup[getGroup.length - 1];
-	// 	if (!obj[group]) obj[group] = {};
-	// 	if (!obj[group][val]) {
-	// 		obj[group][val] = []
-	// 	} else {
-	// 		obj[group][val].push(num);
-	// 	}
-	// 	return obj;
-	// }, {})
-	// return table;
 	const result = {}
 	collections.forEach(item => {
 		const parts = item.name.split("/");
@@ -136,7 +170,8 @@ function getVariableGroup(collections: unknown[]): Record<string, Record<string,
 			if (i === parts.length - 1) {
 				currentObj[part] = {
 					type: 'color',
-					value: (item.values?.r) ? rgbToHex(item.values) : ''
+					// value: (item.values?.r) ? rgbToHex(item.values) : ''
+					value: item.values
 				}
 			} else {
 				if (!currentObj[part]) {
