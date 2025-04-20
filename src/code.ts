@@ -36,7 +36,10 @@ async function getVariableCollections(): Promise<void> {
 			parentElement: "#generate-button",
 			label: "Generate",
 			variant: 'filled',
-			size: 'lg'
+			size: 'lg',
+			events: {
+				'click': 'generatePalettes'
+			}
 		});
 		Button({
 			parentElement: "#list-button",

@@ -168,7 +168,11 @@ function createElement(content: Content): void {
         for (const [styleKey, styleValue] of Object.entries(value)) {
           element.style[styleKey as any] = styleValue;
         }
-      } else if (typeof value === "string") {
+      } else if (key === 'events') {
+				for (const [event, handler] of Object.entries(value)) {
+					element.addEventListener(event, funcMap[handler as keyof typeof funcMap]);
+				}
+			} else if (typeof value === "string") {
         element.setAttribute(key, value);
       }
     }
@@ -176,4 +180,22 @@ function createElement(content: Content): void {
 
   const parent = parentElement ? document.querySelector(parentElement) : null;
   parent?.appendChild(element);
+}
+
+type FunctionMap = {
+	[eventName: string]: (e?: any) => void
+}
+const funcMap: FunctionMap = {
+	'generatePalettes': () => {
+		console.log(palettes)
+		parent.postMessage(
+			{
+				pluginMessage: {
+					type: "generate-palettes-on-figma",
+					palettes,
+				},
+			},
+			"*"
+		);
+	}
 }
