@@ -10,6 +10,11 @@ type ButtonProps = {
 	outlined?: boolean
 	css?: string
 	style?: Record<string, string>
+	events?:
+	{
+		[eventName: string]: string
+	}
+	// Record<string, EventListener>
 	onClick?: () => void
 	[key: string]: unknown
 }
@@ -23,6 +28,7 @@ export function Button(property: ButtonProps) {
 		variant = "filled",
 		outlined,
 		style,
+		events,
 		onClick,
 	} = property
 
@@ -104,6 +110,9 @@ export function Button(property: ButtonProps) {
 	// 		style
 	// 	};
 	// }
+	if (events) {
+		attribute.events = events
+	}
 
 	attribute.style = {
 		...(outlined? buttonStyle['outlined'] : (buttonStyle[variant] || {})),

@@ -36,7 +36,10 @@ async function getVariableCollections(): Promise<void> {
 			parentElement: "#generate-button",
 			label: "Generate",
 			variant: 'filled',
-			size: 'lg'
+			size: 'lg',
+			events: {
+				'click': 'generatePalettes'
+			}
 		});
 		Button({
 			parentElement: "#list-button",
@@ -61,7 +64,7 @@ async function getVariableCollections(): Promise<void> {
   }
 }
 
-figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[], modes: Mode[] }) => {
+figma.ui.onmessage = async (msg: {type: string, id?: string, variableIds?: string[], modes?: Mode[], palettes?: object[] }) => {
   if (msg.type === "get-variable-group") {
     console.log(msg.id);
     try {
@@ -83,7 +86,57 @@ figma.ui.onmessage = async (msg: {type: string, id: string, variableIds: string[
     } catch (error) {
       console.error(error);
     }
-  }
+  } else if (msg.type === 'generate-palettes-on-figma') {
+		let currentY = 1300;
+		msg.palettes.forEach((rootPalette, rIdx) => {
+			if (rootPalette.group) {
+				rootPalette.group.forEach((paletteGroup, gIdx) => {
+					currentY = currentY + 150 + 50
+					paletteGroup.palettes.forEach((palette, pIdx) => {
+						const colorRect = figma.createRectangle()
+						// Move to (50, 50)
+						colorRect.x = 500 + (150*pIdx)
+						colorRect.y = currentY
+
+						// Set size to 200 x 100
+						colorRect.resize(150, 150)
+
+						// Set solid red fill
+						if (palette?.value?.r > -1) {
+							const { r, g, b, a } = palette.value;
+							colorRect.fills = [{ type: 'SOLID', color: { r, g, b }, opacity: a }]
+						} else {
+							colorRect.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: 1 }]
+						}
+						figma.currentPage.selection = figma.currentPage.selection.concat(colorRect)
+					})
+				})
+			}
+			if (rootPalette.palettes) {
+				currentY = currentY + 150 + 50
+				rootPalette.palettes.forEach((palette, pIdx) => {
+					const colorRect = figma.createRectangle()
+					// Move to (50, 50)
+					colorRect.x = 500 + (150*pIdx)
+					colorRect.y = currentY
+
+					// Set size to 200 x 100
+					colorRect.resize(150, 150)
+
+					// Set solid red fill
+					if (palette?.value?.r > -1) {
+						const { r, g, b, a } = palette.value;
+						colorRect.fills = [{ type: 'SOLID', color: { r, g, b }, opacity: a }]
+					} else {
+						colorRect.fills = [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: 1 }]
+					}
+					figma.currentPage.selection = figma.currentPage.selection.concat(colorRect)
+				})
+			}
+		})
+		figma.group(figma.currentPage.selection, figma.currentPage)
+
+	}
 }
 
 interface Mode {
