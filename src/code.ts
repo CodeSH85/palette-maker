@@ -1,6 +1,6 @@
-import { Button } from "./component/button";
-import { Checkbox } from "./component/checkbox";
-import { List } from "./component/list";
+import { Button } from "./components/button";
+import { Checkbox } from "./components/checkbox";
+import { List } from "./components/list";
 import { postMessageToUI } from "./utils/message";
 
 console.clear();

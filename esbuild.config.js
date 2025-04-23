@@ -7,7 +7,7 @@ const buildOptions = {
 	entryPoints: [
 		'./src/code.ts',
 		'./src/ui.ts',
-		'./src/css/style.css',
+		'./src/styles/style.css',
 		"./ui.html"
 	],
   outdir: './dist',
