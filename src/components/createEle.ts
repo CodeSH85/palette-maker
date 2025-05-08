@@ -2,7 +2,7 @@ type ElementProp = {
 	tag: string;
 	attribute?: Record<string, unknown>;
 	children?: string | unknown[];
-	parentElement?: string
+	parentElement?: string;
 };
 
 const validHTMLTags = new Set([
@@ -20,18 +20,13 @@ const validHTMLTags = new Set([
 
 
 function isValidHTMLElement(tag: string): boolean {
-	return !(typeof tag !== "string" || !validHTMLTags.has(tag));
+	return typeof tag === "string" && validHTMLTags.has(tag);
 }
 
 export function createEle(property: ElementProp): ElementProp {
-	if (
-		!property ||
-		typeof property !== "object" ||
-		typeof property.tag !== "string"
-	) {
+	if (!property || typeof property !== "object" || typeof property.tag !== "string") {
 		throw new Error("Invalid element properties");
 	}
-
 	const tag = property.tag.toLowerCase();
 	if (!isValidHTMLElement(tag)) {
 		throw new Error(`Invalid HTML element tag: ${tag}`);
