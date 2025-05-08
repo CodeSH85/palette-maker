@@ -1,7 +1,4 @@
-type PostMessage = {
-	name: string,
-	content?: unknown
-}
+import type { PostMessage } from "../types/index";
 
 /**
  *
