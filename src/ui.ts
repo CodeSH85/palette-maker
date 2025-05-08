@@ -1,13 +1,11 @@
 import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import { faBarsStaggered } from '@fortawesome/free-solid-svg-icons'
 import { faCode } from '@fortawesome/free-solid-svg-icons'
-import { rgbToHex } from './utils/helper'
+import type { Content, Palettes, FunctionMap } from './types/index'
 
 library.add(faBarsStaggered)
 library.add(faCode)
 dom.watch();
-
-type Content = Record<string, unknown>;
 
 window.onmessage = (event) => {
 	const { name, content } = event.data.pluginMessage;
@@ -51,7 +49,6 @@ function getVariableCollections(content: Content): void {
 	});
 }
 
-type Palettes = object[];
 let palettes: Palettes = [];
 let currentGroup = {} as { parent?: string; group?: object[]; palettes?: object[]}
 function getCollectionVariables(content: Content): void {
@@ -217,9 +214,6 @@ function createElement(content: Content): void {
   parent?.appendChild(element);
 }
 
-type FunctionMap = {
-	[eventName: string]: (e?: any) => void
-}
 const funcMap: FunctionMap = {
 	'generatePalettes': () => {
 		console.log(palettes)

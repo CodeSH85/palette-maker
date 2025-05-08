@@ -1,54 +1,28 @@
 import { createEle } from "./createEle";
 import { postMessageToUI } from "../utils/message";
-import { Checkbox } from "./checkbox";
 
 type ListProps = {
-	parentElement: string
-	items: Item[]
-	selectable?: boolean
-	subItems?: string
-	css?: string
-	style?: Record<string, string>
-	[key: string]: unknown
+	parentElement: string;
+	items: Item[];
+	selectable?: boolean;
+	style?: Record<string, string>;
 }
 
 interface Item {
-  name: string;
-  id: string;
-  [key: string]: unknown;
+	name: string;
+	id: string;
+	[key: string]: unknown;
 }
 
-export function List(property: ListProps) {
-	const {
-		parentElement,
-		items,
-		selectable = false,
-		subItems,
-		css,
-		style
-	} = property
+export function List({ parentElement, items, selectable = false, style }: ListProps) {
+	let children = "";
 
-		console.log('list items:', items)
-	let children: string | number = "";
+	items.forEach(({ name, id }) => {
+		children += `<li id="${id}">${selectable ? '' : name}</li>`;
+	});
 
-	items.forEach(item => {
-		const { name, id } = item
-		children = children + `
-		<li id="${id}">${ selectable ? '' : name }</li>
-		`
-		// if (selectable) {
-		// 	Checkbox({
-		// 		parentElement: id,
-		// 		label: name,
-		// 		checked: false,
-		// 	})
-		// }
-	})
-
-	const attribute: Record<string, unknown> = {};
-
-	attribute.style = {
-		...(style || {}),
+	const attribute: Record<string, unknown> = {
+		style: { ...(style || {}) }
 	};
 
 	const listObj = createEle({
@@ -56,10 +30,10 @@ export function List(property: ListProps) {
 		parentElement,
 		attribute,
 		children
-	})
+	});
 
 	postMessageToUI({
 		name: "create-element",
 		content: listObj
-	})
+	});
 }

@@ -42,7 +42,6 @@ export function parseColor(color: string): Record<string, number> {
     const [, r, g, b] = match;
     return { r: parseInt(r) / 255, g: parseInt(g) / 255, b: parseInt(b) / 255 };
   } else if (rgbaRegex.test(color)) {
-    if (!rgbaRegex) throw new Error("Invalid RGB color format");
     const match = color.match(rgbaRegex);
     if (!match) throw new Error("Invalid RGBA color format");
     const [, r, g, b, a] = match;
