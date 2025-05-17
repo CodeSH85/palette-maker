@@ -78,16 +78,17 @@ async function getVariableGroup(msg: { variableIds?: string[], modes?: Mode[] })
     return;
   }
   try {
-    const variables = await Promise.all(
+    const variables: (Variable | null)[] = await Promise.all(
       msg.variableIds.map(async (variableId) => figma.variables.getVariableByIdAsync(variableId))
     );
+
     postMessageToUI({
       name: 'get-collection-variables',
       content: {
         variables: variables.map(variable => ({
           name: variable?.name || 'no name',
           resolvedType: variable?.resolvedType,
-          values: variable?.valuesByMode[msg.modes[0].modeId] || [],
+          values: variable?.valuesByMode[msg.modes[0].modeId] || '',
         }))
       }
     });

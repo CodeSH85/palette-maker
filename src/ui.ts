@@ -1,6 +1,6 @@
-import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import { faBarsStaggered } from '@fortawesome/free-solid-svg-icons'
 import { faCode } from '@fortawesome/free-solid-svg-icons'
+import { library, dom } from '@fortawesome/fontawesome-svg-core'
 import type { Content, Palettes, FunctionMap } from './types/index'
 
 library.add(faBarsStaggered)
@@ -13,21 +13,19 @@ window.onmessage = (event) => {
 };
 
 const eventMap: Record<string, (arg0: Content) => void> = {
-	"get-variable-collections": getVariableCollections,
+	"get-variable-collections": renderVariableCollections,
 	"get-collection-variables": getCollectionVariables,
 	"create-element": createElement
 };
 
-function getVariableCollections(content: Content): void {
-  const { collections } = content as { collections: { name: string; id: string; variableIds: string[] }[] };
+function renderVariableCollections(content: Content): void {
+  const { collections } = content as { collections: VariableCollection[] };
 	const list = document.querySelector("#variables-collection");
 	if (!list) return undefined;
-	list.innerHTML = "";
+
+	list!.innerHTML = "";
 	collections.forEach(({ name, id, variableIds, modes }) => {
 		const li = document.createElement("li");
-		// const checkbox = document.createElement("input");
-		// checkbox.type = "checkbox";
-		// li.append(checkbox);
 		const label = document.createElement("span");
 		label.textContent = name;
 		li.append(label);
@@ -49,39 +47,80 @@ function getVariableCollections(content: Content): void {
 	});
 }
 
-let palettes: Palettes = [];
-let currentGroup = {} as { parent?: string; group?: object[]; palettes?: object[]}
+const palettes: Palettes = [];
+let currentGroup = {} as { parent?: string; group?: object[]; palettes?: object[]};
+
 function getCollectionVariables(content: Content): void {
-  const { variables } = content as { variables: { name: string; resolvedType: string }[] };
+  const { variables } = content as { variables: Variable[] };
+
   const colorVariablesDiv = document.querySelector("#color-variables");
   if (!colorVariablesDiv) return;
   colorVariablesDiv.innerHTML = "";
-	console.log('variables==',variables);
-	const variablesTree = getVariableGroup(variables.filter(({ resolvedType }) => resolvedType === "COLOR"));
-	console.log('tree==',variablesTree);
-	Object.entries(variablesTree).forEach(([key, value]) => {
-		createTree([key, value], '', colorVariablesDiv)
-	});
+
+	const colorVariables = variables.filter(({ resolvedType }) => resolvedType === "COLOR")
+	const variablesTree = getVariableGroup(colorVariables);
+
+	Object.entries(variablesTree)
+		.forEach(([key, value]: string[]) => createTree([key, value], '', colorVariablesDiv))
 }
 
+/**
+ * Get the variable group,
+ * e.g. base/green/100 => { base: { green: { 100: { value } } } }
+ * @param {Variable[]} collections
+ * @returns
+ */
+function getVariableGroup(collections: Variable[]): Record<string, Record<string, string>> {
+	const result:Record<string, Record<string, string>> = {};
+
+	collections.forEach(item => {
+		const parts = item.name.split("/");
+		let currentObj = result;
+
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i];
+			if (i === parts.length - 1) {
+				currentObj[part] = {
+					type: 'color',
+					value: item.values
+				}
+			} else {
+				if (!currentObj[part]) {
+					currentObj[part] = {}
+				}
+				currentObj = currentObj[part];
+			}
+		}
+	})
+	return result
+}
+
+/**
+ * Create a tree structure for the color variables
+ * @param entry
+ * @param parent
+ * @param parentEl
+ */
 function createTree(entry, parent, parentEl) {
 	const [key, value] = entry;
 
 	const container = document.createElement("div")
 	container.className = 'container flex flex-col w-full';
-	container.style = "box-sizing: border-box;" + (parent ? "padding-left:12px" : "padding-left:6px;")
+	container.style = "box-sizing: border-box;" + (parent ? "padding-left: 12px" : "padding-left: 6px;")
 
 	const div = document.createElement("div");
-	div.className = "flex w-full"
+	div.className = "flex w-full";
 	div.style = "gap: 4px";
+
 	const checkbox = document.createElement("input");
 	checkbox.type = "checkbox";
 	checkbox.checked = true;
+
 	const label = document.createElement("label");
 	label.textContent = key;
 	div.append(checkbox);
 	div.append(label);
-	container.append(div)
+	container.append(div);
 
 	if (parent) {
 		if (!currentGroup.group) {
@@ -96,21 +135,23 @@ function createTree(entry, parent, parentEl) {
 	}
 
 	const subContainer = document.createElement("div");
-	subContainer.className = "sub-container flex flex-col w-full"
-	subContainer.style = "box-sizing: border-box;padding-left:6px"
+	subContainer.className = "sub-container flex flex-col w-full";
+	subContainer.style = "box-sizing: border-box;padding-left:6px";
+
 	const valueEntry = Object.entries(value);
 	valueEntry.forEach(([key, value]) => {
 		if (typeof value === 'object' && !value.type) {
 			// group. e.g. ['base', {100:{}}]
-			createTree([key, value], key, container)
+			createTree([key, value], key, container);
 		} else {
 			// last token. e.g. ['100', {value}]
 			const div = document.createElement("div");
-			div.className = "flex w-full"
+			div.className = "flex w-full";
 			div.style = "gap: 4px;border-left: 1px solid #CDCDCD;padding-left:6px;box-sizing: border-box;";
 			const checkbox = document.createElement("input");
 			checkbox.type = "checkbox";
 			checkbox.checked = true;
+
 			if (checkbox.checked === true) {
 				if (currentGroup.group?.length) {
 					currentGroup.group.find(g => g.name === parent)?.palettes.push({
@@ -156,30 +197,6 @@ function createTree(entry, parent, parentEl) {
 	parentEl.append(container)
 }
 
-function getVariableGroup(collections: unknown[]): Record<string, Record<string, string>> {
-	const result = {}
-	collections.forEach(item => {
-		const parts = item.name.split("/");
-		let currentObj = result;
-
-		for (let i = 0; i < parts.length; i++) {
-			const part = parts[i];
-			if (i === parts.length - 1) {
-				currentObj[part] = {
-					type: 'color',
-					// value: (item.values?.r) ? rgbToHex(item.values) : ''
-					value: item.values
-				}
-			} else {
-				if (!currentObj[part]) {
-					currentObj[part] = {}
-				}
-				currentObj = currentObj[part];
-			}
-		}
-	})
-	return result
-}
 
 function createElement(content: Content): void {
   const { tag, attribute, children, parentElement } = content as {
@@ -216,7 +233,6 @@ function createElement(content: Content): void {
 
 const funcMap: FunctionMap = {
 	'generatePalettes': () => {
-		console.log(palettes)
 		parent.postMessage(
 			{
 				pluginMessage: {
