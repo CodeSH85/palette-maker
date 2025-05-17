@@ -1,13 +1,17 @@
 export type Content = Record<string, unknown>;
 
-export type Palettes = object[];
+export type Palette = {
+	name: string,
+	value: RGBA
+}
+export type Palettes = Palette[];
 
 export type FunctionMap = {
 	[eventName: string]: (e?: any) => void
 }
 
-export interface Mode {
-	name: string,
+export type Mode = {
+	name: VariableDataType,
 	modeId: string
 }
 
