@@ -7,7 +7,7 @@ export type Palette = {
 export type Palettes = Palette[];
 
 export type FunctionMap = {
-	[eventName: string]: (e?: any) => void
+	[eventName: string]: (e?: unknown) => void
 }
 
 export type Mode = {
@@ -15,7 +15,7 @@ export type Mode = {
 	modeId: string
 }
 
-export type PostMessage = {
+export type PostMessage<T> = {
 	name: string,
-	content?: unknown
+	content?: T
 }
