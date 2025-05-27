@@ -97,6 +97,11 @@ async function getVariableGroup(msg: { variableIds?: string[], modes?: Mode[] })
   }
 }
 
+/**
+ *
+ * @param msg
+ * @returns
+ */
 function generatePalettesOnFigma(msg: { palettes?: any[] }): void {
   if (!msg.palettes) {
     console.error("No palettes provided to generatePalettesOnFigma");
