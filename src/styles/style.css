@@ -1,4 +1,6 @@
 body {
+	background-color: var(--figma-color-bg);
+	color: var(--figma-color-text);
 }
 .flex {
 	display: flex
@@ -65,11 +67,8 @@ body {
 .p-b-lg {
 	padding-bottom: 16px;
 }
-.bg-primary-500 {
-	background: rgba(49, 87, 44, 1);
-}
 .text-surface-invert {
-	color: #ffffff
+	color: var(--figma-color-text);
 }
 .font-medium {
 	font-weight: 500;
@@ -93,31 +92,29 @@ body {
   position: relative;
   cursor: pointer;
   font-size: 14px;
-	/* padding-left: 24px; */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
-/* Hide the browser's default checkbox */
+
 .checkbox-container input {
   opacity: 0;
   height: 0;
   width: 0;
 }
-/* Create a custom checkbox */
+
 .customizedCheckbox {
 	position: absolute;
 	top: 0px;
 	left: 0px;
   height: 16px;
   width: 16px;
-	border: 1px solid #cdcdcd;
+	border: 1px solid var(--figma-color-border);
 	border-radius: 4px;
-	/* background: rgba(255,255,255,.5); */
 	transition: background .2s;
 }
-/* When the checkbox is checked, add a blue background */
+
 .checkbox-container input:checked ~ .customizedCheckbox {
 	border: 0px;
   background: #31572C;
@@ -125,25 +122,22 @@ body {
 	align-items: center;
 }
 
-/* Create the customizedCheckbox/indicator (hidden when not checked) */
 .customizedCheckbox:after {
   content: "";
   position: absolute;
   display: none;
 }
 
-/* Show the customizedCheckbox when checked */
 .checkbox-container input:checked ~ .customizedCheckbox:after {
   display: block;
 }
 
-/* Style the customizedCheckbox/indicator */
 .checkbox-container .customizedCheckbox:after {
   left: 5px;
 	top: 2px;
   width: 5px;
   height: 9px;
-  border: solid white;
+  border: var(--figma-color-border);
   border-width: 0 2px 2px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);

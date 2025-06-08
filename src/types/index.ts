@@ -4,6 +4,7 @@ export type Palette = {
 	name: string,
 	value: RGBA
 }
+
 export type Palettes = Palette[];
 
 export type FunctionMap = {
