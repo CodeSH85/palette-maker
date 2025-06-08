@@ -43,12 +43,12 @@ export function Button({
 		transition: 'background 0.2s, color 0.2s'
 	};
 	const variantStyle = outlined
-		? { ...baseStyle, background: 'transparent', color: '#0C8CE9', border: '1px solid #0C8CE9' }
+		? { ...baseStyle, background: 'transparent', color: 'var(--figma-color-text)', border: 'var(--figma-color-border)' }
 		: variant === 'filled'
-			? { ...baseStyle, background: '#0C8CE9', color: '#FFF', border: 'none' }
+			? { ...baseStyle, background: 'var(--figma-color-bg-brand)', color: 'var(--figma-color-text)', border: 'none' }
 			: variant === 'tonal'
-				? { ...baseStyle, background: '#0C8CE9', color: '#FFF' }
-				: { ...baseStyle, background: 'transparent', color: '#0C8CE9' };
+				? { ...baseStyle, background: 'var(--figma-color-bg-brand)', color: 'var(--figma-color-text)' }
+				: { ...baseStyle, background: 'transparent', color: 'var(--figma-color-text)' };
 
 	const attribute: Record<string, unknown> = {
 		style: { ...variantStyle, ...(style || {}) }
