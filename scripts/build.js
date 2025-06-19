@@ -1,13 +1,21 @@
-import fs from 'node:fs';
 import * as esbuild from 'esbuild';
 
-const isWatchMode = process.argv.includes('--watch');
+import fs from 'node:fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { compileSass } from './compileSass.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// const isWatchMode = process.argv.includes('--watch');
+
+const scssFilePath = path.resolve(__dirname, '../src/styles/style.scss');
 
 const buildOptions = {
 	entryPoints: [
 		'./src/code.ts',
 		'./src/ui.ts',
-		'./src/styles/style.css',
 		"./ui.html"
 	],
   outdir: './dist',
@@ -30,11 +38,13 @@ async function build() {
 	const code = result.outputFiles.find(file => file.path.endsWith('code.js'))?.text;
 	const ui = result.outputFiles.find(file => file.path.endsWith('ui.js'))?.text;
 
-  const cssCode = result.outputFiles.find(file => file.path.endsWith('.css'))?.text || '';
+	const cssCode = await compileSass(scssFilePath)
+
   const htmlCode = result.outputFiles.find(file => file.path.endsWith('.html'))?.text || '';
 
 	const styleTemplate = `<style>${cssCode}</style>`;
 	const htmlHeadEndIndex = htmlCode.indexOf('</head>');
+
 	const headStart = htmlCode.slice(0, htmlHeadEndIndex);
 	const headToEnd = htmlCode.slice(htmlHeadEndIndex, htmlCode.length - 1);
 	const injectedHtml = headStart.concat(styleTemplate).concat(headToEnd);
@@ -47,8 +57,6 @@ async function build() {
 		bodyStart
 			.concat(scriptTemplateForUI)
 			.concat(bodyToEnd);
-
-	// console.log(injectedHtmlForUI);
 
 	fs.writeFile('./dist/ui.html', injectedHtmlForUI, err => {
 		if (err) {

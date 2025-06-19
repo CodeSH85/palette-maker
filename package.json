@@ -9,8 +9,8 @@
     "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix .",
     "tsc:build": "tsc -p tsconfig.json",
     "tsc:watch": "npm run tsc:build -- --watch",
-    "esbuild:build": "node esbuild.config.js",
-    "esbuild:watch": "node esbuild.config.js --watch"
+    "esbuild:build": "node ./scripts/build.js",
+    "esbuild:watch": "node ./scripts/build.js --watch"
   },
   "author": "",
   "license": "",
@@ -20,6 +20,7 @@
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "eslint": "^8.54.0",
+    "sass": "^1.89.1",
     "typescript": "^5.3.2"
   },
   "eslintConfig": {

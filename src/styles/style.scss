@@ -117,7 +117,7 @@ body {
 
 .checkbox-container input:checked ~ .customizedCheckbox {
 	border: 0px;
-  background: #31572C;
+  background: var(--figma-color-bg);
 	display: flex;
 	align-items: center;
 }
