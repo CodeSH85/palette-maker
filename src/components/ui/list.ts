@@ -1,5 +1,5 @@
 import { createEle } from "./createEle";
-import { postMessageToUI } from "../utils/message";
+import { postMessageToUI } from "../../utils/message";
 
 type ListProps = {
 	parentElement: string;

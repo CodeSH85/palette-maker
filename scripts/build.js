@@ -14,16 +14,15 @@ const scssFilePath = path.resolve(__dirname, '../src/styles/style.scss');
 
 const buildOptions = {
 	entryPoints: [
-		'./src/code.ts',
+		'./src/main.ts',
 		'./src/ui.ts',
-		"./ui.html"
+		"./src/index.html"
 	],
   outdir: './dist',
 	minify: true,
   bundle: true,
   treeShaking: true,
 
-	// sourcemap: true,
 	assetNames: 'assets/[name]',
 	loader: {
 		".html": "file"
@@ -35,10 +34,11 @@ const buildOptions = {
 
 async function build() {
 	const result = await esbuild.build(buildOptions);
-	const code = result.outputFiles.find(file => file.path.endsWith('code.js'))?.text;
+
+	const code = result.outputFiles.find(file => file.path.endsWith('main.js'))?.text;
 	const ui = result.outputFiles.find(file => file.path.endsWith('ui.js'))?.text;
 
-	const cssCode = await compileSass(scssFilePath)
+	const cssCode = await compileSass(scssFilePath);
 
   const htmlCode = result.outputFiles.find(file => file.path.endsWith('.html'))?.text || '';
 

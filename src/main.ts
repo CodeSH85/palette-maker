@@ -1,6 +1,6 @@
-import { Button } from "./components/button";
-import { Checkbox } from "./components/checkbox";
-import { List } from "./components/list";
+import { Button } from "./components/ui/button";
+import { Checkbox } from "./components/ui/checkbox";
+import { List } from "./components/ui/list";
 import { postMessageToUI } from "./utils/message";
 import type { Mode } from "./types/index";
 
