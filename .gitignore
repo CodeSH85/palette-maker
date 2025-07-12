@@ -5,7 +5,5 @@ node_modules
 
 out/
 dist/
-src/*.js
-code.js
 
 .DS_Store
