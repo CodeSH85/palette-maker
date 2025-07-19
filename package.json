@@ -5,8 +5,6 @@
   "main": "code.js",
   "type": "module",
   "scripts": {
-    "lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules .",
-    "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix .",
     "tsc:build": "tsc -p tsconfig.json",
     "tsc:watch": "npm run tsc:build -- --watch",
     "esbuild:build": "node ./scripts/build.js",
@@ -15,13 +13,13 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "@figma/eslint-plugin-figma-plugins": "*",
+    "@eslint/js": "^9.31.0",
     "@figma/plugin-typings": "^1.108.0",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
-    "@typescript-eslint/parser": "^6.12.0",
-    "eslint": "^8.54.0",
+    "@stylistic/eslint-plugin": "^5.2.0",
+    "eslint": "^9.31.0",
     "sass": "^1.89.1",
-    "typescript": "^5.3.2"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.37.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
