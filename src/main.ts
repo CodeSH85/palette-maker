@@ -1,90 +1,90 @@
-import { Button } from "./components/ui/button";
-import { Checkbox } from "./components/ui/checkbox";
-import { List } from "./components/ui/list";
-import { postMessageToUI } from "./utils/message";
-import type { Mode } from "./types/index";
+import { Button } from './components/ui/button'
+import { Checkbox } from './components/ui/checkbox'
+import { List } from './components/ui/list'
+import { postMessageToUI } from './utils/message'
+import type { Mode } from './types/index'
 
 console.clear();
 
-(function () {
+(function() {
     figma.showUI(__html__, {
 			width: 500,
 			height: 400,
 			themeColors: true
-		});
-    getVariableCollections();
-})();
+		})
+    getVariableCollections()
+})()
 
 async function getVariableCollections(): Promise<void> {
   try {
-    const variablesCollections = await figma.variables.getLocalVariableCollectionsAsync();
+    const variablesCollections = await figma.variables.getLocalVariableCollectionsAsync()
     const processedCollections = variablesCollections.map(collection => ({
       name: collection.name,
       id: collection.id,
       variableIds: collection.variableIds,
       modes: collection.modes
-    }));
+    }))
     List({
-      parentElement: "#variables-collection",
+      parentElement: '#variables-collection',
       items: processedCollections,
       selectable: true
-    });
+    })
     postMessageToUI({
-      name: "get-variable-collections",
+      name: 'get-variable-collections',
       content: { collections: processedCollections }
-    });
+    })
     Button({
-      parentElement: "#generate-button",
-      label: "Generate",
+      parentElement: '#generate-button',
+      label: 'Generate',
       variant: 'filled',
       size: 'lg',
       events: { 'click': 'generatePalettes' }
-    });
+    })
     Button({
-      parentElement: "#list-button",
-      icon: "fa-solid fa-bars-staggered",
+      parentElement: '#list-button',
+      icon: 'fa-solid fa-bars-staggered',
       variant: 'filled',
       outlined: true,
       size: 'md'
-    });
+    })
     Button({
-      parentElement: "#code-button",
-      icon: "fa-solid fa-code",
+      parentElement: '#code-button',
+      icon: 'fa-solid fa-code',
       variant: 'filled',
       outlined: true,
       size: 'md'
-    });
+    })
     Checkbox({
-      parentElement: "#variables-item",
-      label: "Label"
-    });
-  } catch (error) {
-    console.error(error);
+      parentElement: '#variables-item',
+      label: 'Label'
+    })
+  } catch(error) {
+    console.error(error)
   }
 }
 
 const eventMap: Record<string, (arg0: any) => void> = {
-  "get-variable-group": getVariableGroup,
-  "generate-palettes-on-figma": generatePalettesOnFigma,
-};
+  'get-variable-group': getVariableGroup,
+  'generate-palettes-on-figma': generatePalettesOnFigma
+}
 
-figma.ui.onmessage = async (msg: { type: string, id?: string, variableIds?: string[], modes?: Mode[], palettes?: any[] }) => {
+figma.ui.onmessage = async(msg: { type: string, id?: string, variableIds?: string[], modes?: Mode[], palettes?: any[] }) => {
   if (eventMap[msg.type]) {
-    eventMap[msg.type](msg);
-    return;
+    eventMap[msg.type](msg)
+    return
   }
-  console.warn(`Unknown message type: ${msg.type}`);
-};
+  console.warn(`Unknown message type: ${msg.type}`)
+}
 
 async function getVariableGroup(msg: { variableIds?: string[], modes?: Mode[] }): Promise<void> {
   if (!msg.variableIds || !msg.modes || !msg.modes[0]) {
-    console.error("Missing variableIds or modes in getVariableGroup");
-    return;
+    console.error('Missing variableIds or modes in getVariableGroup')
+    return
   }
   try {
     const variables: (Variable | null)[] = await Promise.all(
-      msg.variableIds.map(async (variableId) => figma.variables.getVariableByIdAsync(variableId))
-    );
+      msg.variableIds.map(async(variableId) => figma.variables.getVariableByIdAsync(variableId))
+    )
 
     postMessageToUI({
       name: 'get-collection-variables',
@@ -92,12 +92,12 @@ async function getVariableGroup(msg: { variableIds?: string[], modes?: Mode[] })
         variables: variables.map(variable => ({
           name: variable?.name || 'no name',
           resolvedType: variable?.resolvedType,
-          values: variable?.valuesByMode[msg.modes[0].modeId] || '',
+          values: variable?.valuesByMode[msg.modes[0].modeId] || ''
         }))
       }
-    });
-  } catch (error) {
-    console.error(error);
+    })
+  } catch(error) {
+    console.error(error)
   }
 }
 
@@ -108,42 +108,42 @@ async function getVariableGroup(msg: { variableIds?: string[], modes?: Mode[] })
  */
 function generatePalettesOnFigma(msg: { palettes?: any[] }): void {
   if (!msg.palettes) {
-    console.error("No palettes provided to generatePalettesOnFigma");
-    return;
+    console.error('No palettes provided to generatePalettesOnFigma')
+    return
   }
-  let currentY = 1300;
-  const createdRects: SceneNode[] = [];
+  let currentY = 1300
+  const createdRects: SceneNode[] = []
 
   msg.palettes.forEach((rootPalette) => {
     if (rootPalette.group) {
       rootPalette.group.forEach((paletteGroup) => {
-        addPaletteRow(paletteGroup.palettes);
-      });
+        addPaletteRow(paletteGroup.palettes)
+      })
     }
     if (rootPalette.palettes) {
-      addPaletteRow(rootPalette.palettes);
+      addPaletteRow(rootPalette.palettes)
     }
-  });
+  })
 
 	// Helper to add a row of palettes
 	function addPaletteRow(palettes: any[]) {
-		currentY += 200;
+		currentY += 200
 		palettes.forEach((palette, pIdx) => {
 			const color = palette?.value?.r > -1
 				? palette.value
-				: { r: 1, g: 1, b: 1, a: 1 };
+				: { r: 1, g: 1, b: 1, a: 1 }
 			const colorRect = createColorRect({
 				x: 500 + (150 * pIdx),
 				y: currentY,
 				color
-			});
-			createdRects.push(colorRect);
-		});
+			})
+			createdRects.push(colorRect)
+		})
 	}
 
   if (createdRects.length > 0) {
-    figma.currentPage.selection = createdRects;
-    figma.group(createdRects, figma.currentPage);
+    figma.currentPage.selection = createdRects
+    figma.group(createdRects, figma.currentPage)
   }
 }
 
@@ -174,10 +174,10 @@ function createColorRect({
   y?: number;
   color: { r: number; g: number; b: number; a: number };
 }): RectangleNode {
-  const colorRect = figma.createRectangle();
-  colorRect.x = x;
-  colorRect.y = y;
-  colorRect.resize(w, h);
-  colorRect.fills = [{ type: 'SOLID', color: { r, g, b }, opacity: a }];
-  return colorRect;
+  const colorRect = figma.createRectangle()
+  colorRect.x = x
+  colorRect.y = y
+  colorRect.resize(w, h)
+  colorRect.fills = [{ type: 'SOLID', color: { r, g, b }, opacity: a }]
+  return colorRect
 }

@@ -1,5 +1,5 @@
-import { createEle } from "./createEle";
-import { postMessageToUI } from "../../utils/message";
+import { createEle } from './createEle'
+import { postMessageToUI } from '../../utils/message'
 
 type ListProps = {
 	parentElement: string;
@@ -15,25 +15,25 @@ interface Item {
 }
 
 export function List({ parentElement, items, selectable = false, style }: ListProps) {
-	let children = "";
+	let children = ''
 
 	items.forEach(({ name, id }) => {
-		children += `<li id="${id}">${selectable ? '' : name}</li>`;
-	});
+		children += `<li id="${id}">${selectable ? '' : name}</li>`
+	})
 
 	const attribute: Record<string, unknown> = {
 		style: { ...(style || {}) }
-	};
+	}
 
 	const listObj = createEle({
-		tag: "ul",
+		tag: 'ul',
 		parentElement,
 		attribute,
 		children
-	});
+	})
 
 	postMessageToUI({
-		name: "create-element",
+		name: 'create-element',
 		content: listObj
-	});
+	})
 }

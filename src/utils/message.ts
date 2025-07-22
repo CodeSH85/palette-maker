@@ -1,4 +1,4 @@
-import type { PostMessage } from "../types/index";
+import type { PostMessage } from '../types/index'
 
 /**
  *
@@ -6,7 +6,7 @@ import type { PostMessage } from "../types/index";
  * @returns
  */
 export function postMessageToUI(messageObj: PostMessage): void {
-	const { name } = messageObj;
-	if (!name || typeof name !== "string") return;
-	figma.ui.postMessage(messageObj);
+	const { name } = messageObj
+	if (!name || typeof name !== 'string') return
+	figma.ui.postMessage(messageObj)
 }
