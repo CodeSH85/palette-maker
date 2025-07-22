@@ -41,17 +41,17 @@ function injectCodeAssets(html, css, js) {
 async function build() {
 	try {
     const result = await esbuild.build(buildOptions)
-    const code = result.outputFiles.find(f => f.path.endsWith('code.js'))?.text || ''
+    const code = result.outputFiles.find(f => f.path.endsWith('main.js'))?.text || ''
     const ui = result.outputFiles.find(f => f.path.endsWith('ui.js'))?.text || ''
     const html = result.outputFiles.find(f => f.path.endsWith('.html'))?.text || ''
     const css = await compileSass(scssFilePath)
 
     const finalHtml = injectCodeAssets(html, css, ui)
 
-    await fs.mkdir(outDir, { recursive: true })
+    fs.mkdirSync(outDir, { recursive: true })
     await Promise.all([
-      fs.writeFile(path.join(outDir, 'ui.html'), finalHtml),
-      fs.writeFile(path.join(outDir, 'code.js'), code)
+      fs.writeFileSync(path.join(outDir, 'ui.html'), finalHtml),
+      fs.writeFileSync(path.join(outDir, 'code.js'), code)
     ])
     console.log('✅ Build complete!')
   } catch(err) {
