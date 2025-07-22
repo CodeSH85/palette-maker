@@ -1,5 +1,5 @@
-import { createEle } from "./createEle";
-import { postMessageToUI } from "../../utils/message";
+import { createEle } from './createEle'
+import { postMessageToUI } from '../../utils/message'
 
 type CheckboxProps = {
 	parentElement: string;
@@ -22,23 +22,23 @@ export function Checkbox({ parentElement, label = '', checked = false, style, on
 				<div class="font-medium">${label}</div>
 			</div>
 		</label>
-	`;
+	`
 
 	const attribute: Record<string, unknown> = {
 		class: 'w-full flex',
 		style: { ...(style || {}) }
-	};
-	if (onChange) attribute.onClick = onChange;
+	}
+	if (onChange) attribute.onClick = onChange
 
 	const checkboxObj = createEle({
-		tag: "div",
+		tag: 'div',
 		parentElement,
 		attribute,
 		children
-	});
+	})
 
 	postMessageToUI({
-		name: "create-element",
+		name: 'create-element',
 		content: checkboxObj
-	});
+	})
 }

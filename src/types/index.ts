@@ -1,11 +1,11 @@
-export type Content = Record<string, unknown>;
+export type Content = Record<string, unknown>
 
 export type Palette = {
 	name: string,
 	value: RGBA
 }
 
-export type Palettes = Palette[];
+export type Palettes = Palette[]
 
 export type FunctionMap = {
 	[eventName: string]: (e?: unknown) => void
