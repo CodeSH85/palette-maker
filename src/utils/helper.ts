@@ -1,109 +1,64 @@
-/**
- *
- * Helper functions from figma repo:
- * https://github.com/figma/plugin-samples/blob/main/variables-import-export/code.js#L167
- */
+export function isString(value: unknown): value is string {
+  return typeof value === 'string'
+}
+
+export function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+export function isArray(value: unknown): value is unknown[] {
+  return Array.isArray(value)
+}
+
+export function toCamelCase(str: string): string {
+  return str.replace(/-([a-z])/g, (g) => g[1].toLowerCase())
+}
+
+export function capitalizeFirstLetter(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 
 /**
- *
- * @param param0
- * @returns
+ * Convert RGBA object to hex string.
+ * @example
+ * ```js
+ * rgbToHex({ r: 0.5, g: 0.5, b: 0.5, a: 1 }) // "#7f7f7f"
+ * rgbToHex({ r: 0.5, g: 0.5, b: 0.5, a: 0.5 }) // "#7f7f7f80"
+ * ```
  */
-export function rgbToHex({ r, g, b, a }: Record<string, number>): string {
-  if (a !== 1) {
-    return `rgba(${[r, g, b]
-      .map((n) => Math.round(n * 255))
-      .join(', ')}, ${a.toFixed(4)})`
-  }
+export function rgbToHex({ r, g, b, a }: RGBA): `#${string}` {
+
   const toHex = (value: number) => {
     const hex = Math.round(value * 255).toString(16)
     return hex.length === 1 ? '0' + hex : hex
   }
 
   const hex = [toHex(r), toHex(g), toHex(b)].join('')
-  return `#${hex}`
-}
 
-export function parseColor(color: string): Record<string, number> {
-  color = color.trim()
-  const rgbRegex = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/
-  const rgbaRegex =
-    /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([\d.]+)\s*\)$/
-  const hslRegex = /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/
-  const hslaRegex =
-    /^hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*([\d.]+)\s*\)$/
-  const hexRegex = /^#([A-Fa-f0-9]{3}){1,2}$/
-  const floatRgbRegex =
-    /^\{\s*r:\s*[\d.]+,\s*g:\s*[\d.]+,\s*b:\s*[\d.]+(,\s*opacity:\s*[\d.]+)?\s*\}$/
-
-  if (rgbRegex.test(color)) {
-    const match = color.match(rgbRegex)
-    if (!match) throw new Error('Invalid RGB color format')
-    const [, r, g, b] = match
-    return { r: parseInt(r) / 255, g: parseInt(g) / 255, b: parseInt(b) / 255 }
-  } else if (rgbaRegex.test(color)) {
-    const match = color.match(rgbaRegex)
-    if (!match) throw new Error('Invalid RGBA color format')
-    const [, r, g, b, a] = match
-    return {
-      r: parseInt(r) / 255,
-      g: parseInt(g) / 255,
-      b: parseInt(b) / 255,
-      a: parseFloat(a)
-    }
-  } else if (hslRegex.test(color)) {
-    const match = color.match(hslRegex)
-    if (!match) throw new Error('Invalid HSL color format')
-    const [, h, s, l] = match
-    return hslToRgbFloat(parseInt(h), parseInt(s) / 100, parseInt(l) / 100)
-  } else if (hslaRegex.test(color)) {
-    const match = color.match(hslaRegex)
-    if (!match) throw new Error('Invalid HSLA color format')
-    const [, h, s, l, a] = match
-    return Object.assign(
-      hslToRgbFloat(parseInt(h), parseInt(s) / 100, parseInt(l) / 100),
-      { a: parseFloat(a) }
-    )
-  } else if (hexRegex.test(color)) {
-    const hexValue = color.substring(1)
-    const expandedHex =
-      hexValue.length === 3
-        ? hexValue
-            .split('')
-            .map((char) => char + char)
-            .join('')
-        : hexValue
-    return {
-      r: parseInt(expandedHex.slice(0, 2), 16) / 255,
-      g: parseInt(expandedHex.slice(2, 4), 16) / 255,
-      b: parseInt(expandedHex.slice(4, 6), 16) / 255
-    }
-  } else if (floatRgbRegex.test(color)) {
-    return JSON.parse(color)
+  const validAlpha = a !== undefined && a !== 1 && a !== null
+  if (validAlpha) {
+    return `#${hex}${toHex(a)}`
   } else {
-    throw new Error('Invalid color format')
+    return `#${hex}`
   }
 }
 
-function hslToRgbFloat(h: number, s: number, l: number): Record<string, number> {
-  const hue2rgb = (p: number, q: number, t: number) => {
-    if (t < 0) t += 1
-    if (t > 1) t -= 1
-    if (t < 1 / 6) return p + (q - p) * 6 * t
-    if (t < 1 / 2) return q
-    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
-    return p
+export function isValidHex(hex: string): hex is `#${string}` {
+  return /^#([0-9a-f]{6}|[0-9a-f]{8})$/i.test(hex)
+}
+
+export function hexToRGBA(hex: `#${string}`): RGBA | null {
+  const match = isValidHex(hex) ? hex.match(/^#([0-9a-f]{6})([0-9a-f]{2})?$/i) : null
+  if (!match) return null
+
+  const r = parseInt(match[1].slice(0, 2), 16) / 255
+  const g = parseInt(match[1].slice(2, 4), 16) / 255
+  const b = parseInt(match[1].slice(4, 6), 16) / 255
+  const a = match[2] ? parseInt(match[2], 16) / 255 : null
+
+  if (a === null) {
+    return { r, g, b, a: 1 }
+  } else {
+    return { r, g, b, a }
   }
-
-  if (s === 0) {
-    return { r: l, g: l, b: l }
-  }
-
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-  const p = 2 * l - q
-  const r = hue2rgb(p, q, (h + 1 / 3) % 1)
-  const g = hue2rgb(p, q, h % 1)
-  const b = hue2rgb(p, q, (h - 1 / 3) % 1)
-
-  return { r, g, b }
 }
