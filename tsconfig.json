@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["es6", "DOM"],
+    "target": "esnext",
+    "lib": ["ESNext", "DOM"],
     "strict": true,
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules/@figma"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
   }
 }

@@ -3,7 +3,6 @@ import stylistic from '@stylistic/eslint-plugin'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig([
-	tseslint.configs.recommended,
 	{
 		files: ['**/*.{js,ts,jsx,tsx}'],
 		plugins: {
@@ -39,5 +38,6 @@ export default defineConfig([
       '@stylistic/no-mixed-spaces-and-tabs': 'error',
       '@stylistic/no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 0 }]
 		}
-	}
+	},
+  tseslint.configs.recommended
 ])

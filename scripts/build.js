@@ -19,6 +19,9 @@ const buildOptions = {
 		'./src/index.html'
 	],
   outdir: './dist',
+  alias: {
+    '@': path.resolve(__dirname, '../src')
+  },
 	minify: true,
   bundle: true,
   treeShaking: true,
